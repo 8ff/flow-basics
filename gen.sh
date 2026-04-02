@@ -9,7 +9,6 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-INPUT="${1:-example.dot}"
 
 # Check dependencies
 if ! command -v dot &>/dev/null; then

@@ -200,17 +200,6 @@ def process(src):
     ]"""
 
     for i, line in enumerate(lines):
-        # Inject globals after opening brace
-        if i == 0:
-            out.append(line)
-            continue
-        if i == 1 and '{' not in lines[0]:
-            out.append(line)
-            continue
-        if i == 1 or (i == 2 and '{' in lines[1]):
-            # Find the line right after the opening { of the digraph
-            pass
-
         # Track cluster context
         cluster_name = detect_cluster(line)
         if cluster_name:
@@ -267,7 +256,7 @@ def process(src):
     # Inject global defaults after the opening { of the digraph
     result = '\n'.join(out)
     result = re.sub(
-        r'(digraph\s+\w+\s*\{)\n',
+        r'(digraph\s+\S+\s*\{)\n',
         rf'\1\n{global_defaults}\n\n',
         result,
         count=1,
@@ -290,6 +279,10 @@ def render(styled_dot, fmt, output_path):
         f.write(proc.stdout)
     print(f"  {output_path}")
 
+
+if not os.path.isfile(INPUT):
+    print(f"Error: {INPUT} not found", file=sys.stderr)
+    sys.exit(1)
 
 with open(INPUT) as f:
     src = f.read()
