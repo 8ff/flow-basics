@@ -1,0 +1,75 @@
+// Example flow graph — clean structure, styling applied by render.py
+//
+// Node classes:  start | decision | success | fail | drop | warn | info | muted
+// Edge classes:  yes | no | major | major_yes | major_no | timeout
+//                retry | retry_back | loop | yes_loop | fail_loop
+//                skip | async | optional
+// Clusters:      name them cluster_* — colors auto-assigned from palette
+
+digraph Flow {
+
+    // ── A: Entry ──
+    subgraph cluster_entry {
+        label="A. Request Entry"
+
+        start     [label="Incoming\nRequest"   class=start]
+        validate  [label="Validate\nInput"     shape=diamond class=decision]
+        reject    [label="400\nBad Request"    class=drop]
+    }
+
+    // ── B: Auth ──
+    subgraph cluster_auth {
+        label="B. Authentication"
+
+        auth      [label="Check\nCredentials"  shape=diamond class=decision]
+        denied    [label="401\nUnauthorized"   class=fail]
+        rate_warn [label="Rate Limit\nWarning" class=warn]
+    }
+
+    // ── C: Processing ──
+    subgraph cluster_processing {
+        label="C. Core Processing"
+
+        process   [label="Process\nRequest"]
+        cache_chk [label="Cache\nHit?"         shape=diamond class=decision]
+        compute   [label="Compute\nResult"]
+        cache_set [label="Update\nCache"        class=muted]
+    }
+
+    // ── D: Response ──
+    subgraph cluster_response {
+        label="D. Response"
+
+        respond   [label="Build\nResponse"]
+        ok        [label="200 OK"              class=success]
+        log       [label="Audit\nLog"          class=info]
+    }
+
+    // ── E: Error Handling ──
+    subgraph cluster_errors {
+        label="E. Error Handling"
+
+        err       [label="Handle\nError"]
+        retry_chk [label="Retries\nLeft?"       shape=diamond class=decision]
+        err_resp  [label="500\nServer Error"    class=fail]
+    }
+
+    // ── Edges ──
+    start     -> validate
+    validate  -> auth       [label="valid"    class=yes]
+    validate  -> reject     [label="invalid"  class=no]
+    auth      -> rate_warn  [label="near limit" class=optional]
+    auth      -> process    [label="ok"       class=yes]
+    auth      -> denied     [label="fail"     class=no]
+    process   -> cache_chk
+    cache_chk -> respond    [label="hit"      class=major_yes]
+    cache_chk -> compute    [label="miss"     class=no]
+    compute   -> cache_set
+    cache_set -> respond
+    compute   -> err        [label="error"    class=no]
+    respond   -> log        [class=async]
+    respond   -> ok         [class=major]
+    err       -> retry_chk
+    retry_chk -> process    [label="yes"      class=retry_back]
+    retry_chk -> err_resp   [label="no"       class=timeout]
+}
