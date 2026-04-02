@@ -9,6 +9,7 @@ Dark-themed Graphviz flow diagrams with semantic classes. Write clean `.dot` fil
 ```bash
 ./gen.sh                    # renders example.dot -> example.svg + example.png
 ./gen.sh myflow.dot         # renders myflow.dot  -> myflow.svg  + myflow.png
+./gen.sh a.dot output       # renders a.dot       -> output.svg  + output.png
 ```
 
 Requires `graphviz` and `python3`:
@@ -57,7 +58,7 @@ digraph TopicName {
 5. Use `shape=diamond` on decision/question nodes alongside `class=decision`
 6. Keep node labels short (1-3 words), use `\n` for line breaks
 7. Do NOT add any `color`, `fillcolor`, `fontcolor`, `style`, `bgcolor`, `penwidth`, or `fontname` attributes — `render.py` handles all styling
-8. Do NOT add `rankdir`, `compound`, or `newrank` — these are set automatically
+8. Do NOT add `rankdir` or `compound` — these are set automatically
 
 ### Node classes
 

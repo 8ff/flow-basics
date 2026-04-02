@@ -157,7 +157,8 @@ def style_cluster_line(line, cluster_name, depth=0):
     if m:
         indent = m.group(1)
         text = m.group(2)
-        return f'{indent}label=<<B>{text}</B>>\n{indent}fontsize={"11" if is_sub else "14"}\n{indent}fontcolor="{fc}"\n{indent}style="rounded{"" if is_sub else ",dashed"}"\n{indent}color="{color}"\n{indent}bgcolor="{BG + "99" if is_sub else BG}"\n{indent}penwidth={"1.5" if is_sub else "2"}'
+        margin = "16" if is_sub else "36"
+        return f'{indent}label=<<B>{text}</B>>\n{indent}fontsize={"11" if is_sub else "14"}\n{indent}fontcolor="{fc}"\n{indent}style="rounded{"" if is_sub else ",dashed"}"\n{indent}color="{color}"\n{indent}bgcolor="{BG + "99" if is_sub else BG}"\n{indent}penwidth={"1.5" if is_sub else "2"}\n{indent}margin="{margin}"'
     return line
 
 def process(src):
@@ -175,6 +176,7 @@ def process(src):
     nodesep=0.6
     ranksep=0.7
     splines=true
+    newrank=true
     forcelabels=true
 
     node [
@@ -256,8 +258,8 @@ def process(src):
             out.append(line)
             continue
 
-        # Skip rankdir/compound/newrank (we set our own)
-        if re.match(r'\s*(rankdir|compound|newrank)\s*=', line):
+        # Skip rankdir/compound (we set our own)
+        if re.match(r'\s*(rankdir|compound)\s*=', line):
             continue
 
         out.append(line)
