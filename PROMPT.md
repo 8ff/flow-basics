@@ -79,7 +79,7 @@ digraph TopicName {
 
 ## Step 2: Render the diagram
 
-Make sure `graphviz` is installed (`brew install graphviz` on macOS, `apt install graphviz` on Linux), then run:
+Make sure `graphviz` is installed (`brew install graphviz` on macOS, `apt install graphviz` on Linux, `pkg install graphviz` on FreeBSD, `pkg_add graphviz` on OpenBSD), then run:
 
 ```bash
 curl -s https://raw.githubusercontent.com/8ff/flow-basics/main/render.py | python3 - yourfile.dot

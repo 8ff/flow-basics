@@ -18,6 +18,8 @@ Requires `graphviz` and `python3`:
 ```bash
 brew install graphviz       # macOS
 apt install graphviz        # Linux
+pkg install graphviz        # FreeBSD
+pkg_add graphviz            # OpenBSD
 ```
 
 ```bash

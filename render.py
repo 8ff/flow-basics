@@ -8,9 +8,18 @@ Produces both .svg and .png unless output_base ends with .svg or .png.
 """
 
 import re
+import shutil
 import subprocess
 import sys
 import os
+
+if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help'):
+    print("Usage: python3 render.py <input.dot> [output_base]")
+    print()
+    print("  input.dot    Graphviz .dot file with class= attributes")
+    print("  output_base  Output name (default: input name without extension)")
+    print("               Produces .svg and .png unless output_base ends with .svg or .png")
+    sys.exit(0)
 
 INPUT = sys.argv[1] if len(sys.argv) > 1 else "example.dot"
 OUTPUT_ARG = sys.argv[2] if len(sys.argv) > 2 else None
@@ -282,6 +291,14 @@ def render(styled_dot, fmt, output_path):
 
 if not os.path.isfile(INPUT):
     print(f"Error: {INPUT} not found", file=sys.stderr)
+    sys.exit(1)
+
+if not shutil.which('dot'):
+    print("Error: graphviz not installed. Install with:", file=sys.stderr)
+    print("  brew install graphviz     # macOS", file=sys.stderr)
+    print("  apt install graphviz      # Linux", file=sys.stderr)
+    print("  pkg install graphviz      # FreeBSD", file=sys.stderr)
+    print("  pkg_add graphviz          # OpenBSD", file=sys.stderr)
     sys.exit(1)
 
 with open(INPUT) as f:
